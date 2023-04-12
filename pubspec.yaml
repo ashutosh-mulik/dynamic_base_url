@@ -1,0 +1,23 @@
+name: dynamic_base_url
+description: A Flutter package for dynamically changing base url.
+version: 1.0.1
+homepage: https://github.com/ashutosh-mulik/dynamic_base_url
+repository: https://github.com/ashutosh-mulik/dynamic_base_url
+issue_tracker: https://github.com/ashutosh-mulik/dynamic_base_url/issues
+
+environment:
+  sdk: '>=2.19.6 <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  sensors_plus: ^2.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:

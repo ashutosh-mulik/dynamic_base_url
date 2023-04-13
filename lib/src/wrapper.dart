@@ -1,81 +1,86 @@
-import 'package:dynamic_base_url/src/shake.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_sheet.dart';
 
 class BaseWrapper extends StatefulWidget {
-  final GlobalKey<NavigatorState> navigatorKey;
-  final Widget child;
-  final VoidCallback onBaseUrlChange;
+  /// Builder
+  final Function(BuildContext) builder;
 
+  /// Base Url change callback
+  final VoidCallback onBaseUrlChanged;
+
+  /// [BaseWrapper] to restart app when base url changes.
+  /// [builder]
+  /// [onBaseUrlChanged] Base Url change callback.
   const BaseWrapper({
     Key? key,
-    required this.navigatorKey,
-    required this.child,
-    required this.onBaseUrlChange,
+    required this.builder,
+    required this.onBaseUrlChanged,
   }) : super(key: key);
 
   @override
-  State<BaseWrapper> createState() => _BaseWrapperState();
+  State<BaseWrapper> createState() => BaseWrapperState();
 }
 
-class _BaseWrapperState extends State<BaseWrapper> {
-  Key _key = UniqueKey();
-  bool _isOpen = false;
+class BaseWrapperState extends State<BaseWrapper> {
+  bool _reset = false;
+  bool _showSettings = false;
 
-  void restartApp() {
-    setState(() {
-      _key = UniqueKey();
-    });
-  }
+  /// Bubble location
+  Offset _offset = const Offset(20, 100);
 
-  ShakeDetector detector = ShakeDetector();
-
-  @override
-  void initState() {
-    super.initState();
-    detector.startListening(() {
-      if (_isOpen) return;
-      openDialog();
-    });
-  }
-
-  @override
-  void dispose() {
-    detector.stopListening();
-    super.dispose();
+  /// Restarts the builder widget
+  restart() async {
+    setState(() => _reset = true);
+    await Future.delayed(const Duration(milliseconds: 500));
+    setState(() => _reset = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return KeyedSubtree(
-      key: _key,
-      child: widget.child,
-    );
-  }
-
-  openDialog() {
-    _isOpen = true;
-    bool isChanged = false;
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: widget.navigatorKey.currentContext!,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(widget.navigatorKey.currentContext!).viewInsets.bottom + 20, left: 20, right: 20, top: 20),
-          child: CustomSheet(
-            changed: () {
-              isChanged = true;
-              Navigator.pop(widget.navigatorKey.currentContext!);
-            },
+    return Stack(
+      children: [
+        _reset
+            ? const Scaffold(
+                body: Center(
+                  child: Text("Restarting..."),
+                ),
+              )
+            : widget.builder(context),
+        Positioned(
+          left: _offset.dx,
+          top: _offset.dy,
+          child: GestureDetector(
+            onPanUpdate: (d) => setState(() => _offset += Offset(d.delta.dx, d.delta.dy)),
+            child: FloatingActionButton(
+              elevation: 0,
+              onPressed: () {
+                setState(() {
+                  _showSettings = true;
+                });
+              },
+              child: const Icon(Icons.change_circle_outlined),
+            ),
           ),
-        );
-      },
-    ).whenComplete(() {
-      _isOpen = false;
-      if (!isChanged) return;
-      widget.onBaseUrlChange();
-      restartApp();
-    });
+        ),
+        if (_showSettings) ...[
+          Positioned.fill(
+            child: MaterialApp(
+              home: CustomSheet(
+                changed: (isUrlChanged) {
+                  setState(() {
+                    _showSettings = false;
+                  });
+                  if (isUrlChanged) {
+                    restart();
+                    widget.onBaseUrlChanged();
+                  }
+                },
+              ),
+            ),
+          ),
+        ]
+      ],
+    );
   }
 }

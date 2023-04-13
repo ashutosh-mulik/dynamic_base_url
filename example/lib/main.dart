@@ -9,24 +9,23 @@ void main() {
     prod: 'https://jsonplaceholder.typicode.com',
   );
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      navigatorKey: navigatorKey,
-
-      /// Add wrapper
-      home: BaseWrapper(
-        navigatorKey: navigatorKey,
-        child: const BaseURLUseExample(),
-        onBaseUrlChange: () {},
-      ),
+      builder: (context, child) {
+        /// Set up [BaseWrapper]
+        return BaseWrapper(
+          builder: (context) => child!,
+          onBaseUrlChanged: () {},
+        );
+      },
+      home: const BaseURLUseExample(),
     );
   }
 }

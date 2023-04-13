@@ -1,6 +1,6 @@
 name: dynamic_base_url
-description: A Flutter package for dynamically changing base url.
-version: 1.2.0
+description: A Flutter package for dynamically changing base url. Change base url without manually modify request URLs every time.
+version: 1.2.1
 homepage: https://github.com/ashutosh-mulik/dynamic_base_url
 repository: https://github.com/ashutosh-mulik/dynamic_base_url
 issue_tracker: https://github.com/ashutosh-mulik/dynamic_base_url/issues

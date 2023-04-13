@@ -54,7 +54,8 @@ class _BaseURLUseExampleState extends State<BaseURLUseExample> {
       body: Center(
         child: FutureBuilder(
           future: _dio.get("/todos/1"),
-          builder: (BuildContext context, AsyncSnapshot<Response<dynamic>> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<Response<dynamic>> snapshot) {
             if (snapshot.hasData) {
               return Text(snapshot.data.toString());
             }

@@ -51,7 +51,8 @@ class BaseWrapperState extends State<BaseWrapper> {
           left: _offset.dx,
           top: _offset.dy,
           child: GestureDetector(
-            onPanUpdate: (d) => setState(() => _offset += Offset(d.delta.dx, d.delta.dy)),
+            onPanUpdate: (d) =>
+                setState(() => _offset += Offset(d.delta.dx, d.delta.dy)),
             child: FloatingActionButton(
               elevation: 0,
               onPressed: () {

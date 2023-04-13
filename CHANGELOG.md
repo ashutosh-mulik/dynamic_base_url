@@ -1,3 +1,5 @@
-## 0.0.1
+## 1.2.0
+* Changed implementation of package
 
-* TODO: Describe initial release.
+## 1.0.1
+* Initial Release
